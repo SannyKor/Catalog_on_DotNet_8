@@ -50,9 +50,6 @@ namespace Catalog_on_DotNet
             return storage.GetUnitQuantityHistory(id);
         }
 
-        ~Catalog()
-        {
-            storage.SaveUnits(units);
-        }
+        
     }
 }

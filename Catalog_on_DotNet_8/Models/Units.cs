@@ -33,6 +33,7 @@ namespace Catalog_on_DotNet
                 NewUnitQuantity = newUnitQuantity;
                 DateOfChange = dateOfChange;
             }
+            public SaveQuantityChange() { }
 
             public int UnitId { get; protected set; }
             public int NewUnitQuantity { get; protected set; }
