@@ -18,8 +18,8 @@ namespace Catalog_on_DotNet
         public Unit() { }
 
         public int Id { get; protected set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
         public double Price { get; set; }
         public int Quantity { get; set; }
         public DateTime AddedDate { get; set; } = DateTime.Now;
@@ -35,6 +35,7 @@ namespace Catalog_on_DotNet
             }
             public SaveQuantityChange() { }
 
+            public int Id { get; set; }
             public int UnitId { get; protected set; }
             public int NewUnitQuantity { get; protected set; }
             public DateTime DateOfChange { get; protected set; }

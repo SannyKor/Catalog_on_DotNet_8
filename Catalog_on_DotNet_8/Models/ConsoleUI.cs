@@ -19,13 +19,13 @@ namespace Catalog_on_DotNet
         public void CreateNewUnit()
         {
             Console.WriteLine("введіть ім'я: ");
-            string name = Console.ReadLine();
+            string? name = Console.ReadLine();
             Console.WriteLine("введіть кількість: ");
             int quantity = int.Parse(Console.ReadLine());
             Console.WriteLine("введіть ціну: ");
             double prise = double.Parse(Console.ReadLine());
             Console.WriteLine("введіть опис: ");
-            string description = Console.ReadLine();
+            string? description = Console.ReadLine();
             Console.WriteLine($"name: {name} description: {description}");
             catalog.AddUnit(name, description, prise, quantity);
         }
@@ -55,7 +55,7 @@ namespace Catalog_on_DotNet
                 Console.WriteLine("невіний формат, спробуйте ще раз");
             }
 
-            Unit unit = catalog.GetUnitById(id);
+            Unit? unit = catalog.GetUnitById(id);
 
             if (unit == null)
             {
@@ -74,7 +74,7 @@ namespace Catalog_on_DotNet
                     QuantityHistory = unit.QuantityHistory
                 };
                 Console.WriteLine("введіть нове ім'я або enter щоб продовжити: ");
-                string name = Console.ReadLine();
+                string? name = Console.ReadLine();
                 if (!string.IsNullOrEmpty(name))
                 {
 
@@ -103,7 +103,7 @@ namespace Catalog_on_DotNet
                 }
 
                 Console.WriteLine("введіть новий опис або enter щоб продовжити без змін: ");
-                string description = Console.ReadLine();
+                string? description = Console.ReadLine();
                 if (!string.IsNullOrEmpty(description))
                 {
                     changedUnit.Description = description;
@@ -124,7 +124,7 @@ namespace Catalog_on_DotNet
         {
             Console.WriteLine("введіть артикул: ");
             int id = int.Parse(Console.ReadLine());
-            Unit unit = catalog.GetUnitById(id);
+            Unit? unit = catalog.GetUnitById(id);
             if (unit == null)
             {
                 Console.WriteLine("товар не знайдено\n");
@@ -181,7 +181,7 @@ namespace Catalog_on_DotNet
         public void FindUnitByName()
         {
             Console.WriteLine("введіть запит:");
-            string query = Console.ReadLine();
+            string? query = Console.ReadLine();
             List<Unit> found = catalog.FindUnit(query);
 
             if (found.Count > 0)
@@ -210,7 +210,7 @@ namespace Catalog_on_DotNet
                     "\n7. знайти по назві або частині назви;" +
                     "\n8. вийти;\n");
 
-                string choise = Console.ReadLine();
+                string? choise = Console.ReadLine();
                 switch (choise)
                 {
                     case "1":

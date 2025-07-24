@@ -11,32 +11,58 @@ namespace Catalog_on_DotNet
         private readonly CatalogDbContext dbContext;
         public StorageFromDbEf()
         {
-            dbContext = new CatalogDbContext();
-            dbContext.Database.EnsureCreated(); // Ensure the database is created
+            dbContext = new CatalogDbContext();            
         }
         public override List<Unit> FindUnit(string query)
         {
             throw new NotImplementedException();
         }
 
-        public override Unit GetUnitById(int id)
+        public override Unit? GetUnitById(int id)
         {
-            throw new NotImplementedException();
+            return dbContext.Units.Find(id);            
         }
 
         public override List<Unit.SaveQuantityChange> GetUnitQuantityHistory(int id)
         {
-            throw new NotImplementedException();
+            List<Unit.SaveQuantityChange> quantityHistory = new List<Unit.SaveQuantityChange>();
+            quantityHistory = dbContext.QuantityChanges
+                .Where(q => q.UnitId == id)                
+                .ToList();
+            return quantityHistory;
         }
 
         public override Unit InsertUnit(string name, string description, double price, int quantity)
         {
-            throw new NotImplementedException();
+            var unit = new Unit
+            {
+                Name = name,
+                Description = description,
+                Price = price,
+                Quantity = quantity,
+                AddedDate = DateTime.Now
+            };
+            var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, unit.AddedDate);
+            unit.QuantityHistory.Add(saveQuantityHistory);
+
+            dbContext.QuantityChanges.Add(saveQuantityHistory);
+            dbContext.SaveChangesAsync();
+
+            dbContext.Units.Add(unit);
+            dbContext.SaveChangesAsync();
+            return unit;
         }
 
         public override List<Unit> LoadUnits()
         {
-            throw new NotImplementedException();
+            List<Unit> units = dbContext.Units.ToList();
+            foreach (var unit in units)
+            {
+                unit.QuantityHistory = dbContext.QuantityChanges
+                    .Where(q => q.UnitId == unit.Id)
+                    .ToList();
+            }
+            return units;
         }
 
         public override bool RemoveUnit(int id)

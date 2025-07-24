@@ -26,7 +26,7 @@ namespace Catalog_on_DotNet
             units.Add(unit);
         }
 
-        public Unit GetUnitById(int id)
+        public Unit? GetUnitById(int id)
         {
             return storage.GetUnitById(id);
         }

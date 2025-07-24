@@ -100,7 +100,7 @@ namespace Catalog_on_DotNet
             unit.QuantityHistory.Add(saveQuantityHistory);
             return unit;
         }
-        public override Unit GetUnitById(int id)
+        public override Unit? GetUnitById(int id)
         {
             Unit unit = units.Find(u => u.Id == id);
             return unit;

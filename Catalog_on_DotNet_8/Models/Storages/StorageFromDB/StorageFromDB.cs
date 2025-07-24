@@ -140,7 +140,7 @@ namespace Catalog_on_DotNet
             }
 
         }
-        public override Unit GetUnitById(int id)
+        public override Unit? GetUnitById(int id)
         {
             using (var connection = Sqlite.GetConnection())
             {
