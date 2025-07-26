@@ -196,7 +196,7 @@ namespace Catalog_on_DotNet
         {
             bool wasDelete;
             bool wasDeletedUnitHistory;
-            Unit unit = GetUnitById(id);
+            Unit? unit = GetUnitById(id);
             if (unit == null)
             {
                 return false;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,14 +43,16 @@ namespace Catalog_on_DotNet
                 Quantity = quantity,
                 AddedDate = DateTime.Now
             };
+
+            dbContext.Units.Add(unit);
+            dbContext.SaveChanges();
+
             var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, unit.AddedDate);
             unit.QuantityHistory.Add(saveQuantityHistory);
 
             dbContext.QuantityChanges.Add(saveQuantityHistory);
-            dbContext.SaveChangesAsync();
-
-            dbContext.Units.Add(unit);
-            dbContext.SaveChangesAsync();
+            dbContext.SaveChanges();
+            
             return unit;
         }
 
@@ -67,7 +70,20 @@ namespace Catalog_on_DotNet
 
         public override bool RemoveUnit(int id)
         {
-            throw new NotImplementedException();
+
+            bool wasDelete;
+            
+            var unit = dbContext.Units.Find(id);
+            if (unit != null)
+            {
+                dbContext.Units.Remove(unit);
+                
+                return wasDelete = dbContext.SaveChanges()>0;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public override void SaveUnits(List<Unit> units)
