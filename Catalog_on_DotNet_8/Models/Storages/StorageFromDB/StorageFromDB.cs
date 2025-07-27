@@ -226,8 +226,13 @@ namespace Catalog_on_DotNet
         public override void UpdateUnit(Unit unit)
         {
             var oldUnit = GetUnitById(unit.Id);
-            bool wasChangedQuantity = oldUnit.Quantity != unit.Quantity;
+            bool wasChangedQuantity = false;
             DateTime dateTime = DateTime.Now;
+            if (oldUnit != null)
+            {
+                wasChangedQuantity = oldUnit.Quantity != unit.Quantity;
+            }            
+            
             using (var connection = Sqlite.GetConnection())
             {
                 connection.Open();
@@ -309,7 +314,7 @@ namespace Catalog_on_DotNet
             string countSql = $"SELECT COUNT (*) FROM {tableName}";
             using (var countCmd = new SqliteCommand(countSql, connection))
             {
-                long count = (long)countCmd.ExecuteScalar();
+                long? count = (long)countCmd.ExecuteScalar();
                 if (count == 0)
                 {
                     string deleteSql = $"DELETE FROM sqlite_sequence WHERE name='{tableName}'";

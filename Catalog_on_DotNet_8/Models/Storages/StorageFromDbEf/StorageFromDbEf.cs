@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Catalog_on_DotNet
 {
@@ -16,12 +17,22 @@ namespace Catalog_on_DotNet
         }
         public override List<Unit> FindUnit(string query)
         {
-            throw new NotImplementedException();
+            var foundResults = new List<Unit>();
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                foundResults = dbContext.Units
+                .Where(u => u.Name.ToLower().Contains(query.ToLower()) || u.Description.ToLower().Contains(query.ToLower()))
+                .ToList();
+            }
+            return foundResults;
         }
 
         public override Unit? GetUnitById(int id)
         {
-            return dbContext.Units.Find(id);            
+            var unit = dbContext.Units
+                .Include(u => u.QuantityHistory)
+                .FirstOrDefault(u => u.Id == id);
+            return unit;            
         }
 
         public override List<Unit.SaveQuantityChange> GetUnitQuantityHistory(int id)
@@ -93,7 +104,26 @@ namespace Catalog_on_DotNet
 
         public override void UpdateUnit(Unit unit)
         {
-            throw new NotImplementedException();
+            var oldUnit = GetUnitById(unit.Id);
+            bool wasChangedQuantity;
+            if (oldUnit != null)
+            {
+                wasChangedQuantity = oldUnit.Quantity != unit.Quantity;
+                oldUnit.Name = unit.Name;
+                oldUnit.Description = unit.Description;
+                oldUnit.Price = unit.Price;
+                oldUnit.Quantity = unit.Quantity;
+                oldUnit.AddedDate = unit.AddedDate;
+                if (wasChangedQuantity)
+                {
+                    var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, DateTime.Now);
+                    oldUnit.QuantityHistory.Add(saveQuantityHistory);
+                    dbContext.QuantityChanges.Add(saveQuantityHistory);
+                }
+
+                dbContext.SaveChanges();
+            }
+
         }
     }
 }
