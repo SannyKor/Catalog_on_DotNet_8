@@ -13,7 +13,13 @@ namespace Catalog_on_DotNet
         private readonly CatalogDbContext dbContext;
         public StorageFromDbEf()
         {
-            dbContext = new CatalogDbContext();            
+            dbContext = new CatalogDbContext();
+            dbContext.Database.EnsureCreated();
+            if(!dbContext.Units.Any())
+            {
+                dbContext.Database.ExecuteSqlRaw("DELETE FROM sqlite_sequence WHERE name = 'Units'");
+                dbContext.Database.ExecuteSqlRaw("INSERT INTO sqlite_sequence (name,seq) VALUES ('Units', 10000)");
+            }
         }
         public override List<Unit> FindUnit(string query)
         {
