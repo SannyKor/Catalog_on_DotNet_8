@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Catalog_on_DotNet
 {
-    internal class CatalogDbContext : DbContext
+    public class CatalogDbContext : DbContext
     {
         public DbSet<Unit> Units { get; set; }
         public DbSet<Unit.SaveQuantityChange> QuantityChanges { get; set; }

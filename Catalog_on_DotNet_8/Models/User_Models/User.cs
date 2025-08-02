@@ -18,6 +18,7 @@ namespace Catalog_on_DotNet_8.Models.User_Models
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
+        public string Salt { get; set; } = string.Empty;
         public UserRole Role { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
