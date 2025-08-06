@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Catalog_on_DotNet_8.Models.User_Models
+namespace Catalog_on_DotNet
 {
     public enum UserRole
     {
@@ -12,8 +12,18 @@ namespace Catalog_on_DotNet_8.Models.User_Models
         Manager,
         User
     }
-    public class User
+    public class User    
     {
+        public User(string name, string email, string passwordHash)
+        {
+            Id = Guid.NewGuid();
+            Name = name;
+            Email = email;
+            PasswordHash = passwordHash;
+            Role = UserRole.User;
+            CreatedAt = DateTime.UtcNow;
+        }
+        public User() { }
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
