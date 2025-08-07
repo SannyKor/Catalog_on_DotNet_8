@@ -69,6 +69,27 @@ namespace Catalog_on_DotNet
             _dbContext.SaveChanges();
             return true;
         }
-
+        public bool LoginUser(string email, string password)
+        {
+            email = email.ToLower();
+            var user = _dbContext.Users.FirstOrDefault(u => u.Email == email);
+            if ( user==null)
+            {
+                return false; // User not found
+            }
+            var hash = HashPassword(password, user.Salt);
+            return hash == user.PasswordHash;
+        }
+        public bool DeleteUser(Guid userId)
+        {
+            var user = _dbContext.Users.Find(userId);
+            if (user == null)
+            {
+                return false; // User not found
+            }
+            _dbContext.Users.Remove(user);
+            _dbContext.SaveChanges();
+            return true;
+        }
     }
 }
