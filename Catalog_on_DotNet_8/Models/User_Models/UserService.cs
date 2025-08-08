@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using Catalog_on_DotNet;
+using System.Windows.Markup;
 
 
 
@@ -90,6 +91,30 @@ namespace Catalog_on_DotNet
             _dbContext.Users.Remove(user);
             _dbContext.SaveChanges();
             return true;
+        }
+        public User GetUserById(Guid userId)
+        {
+
+            return _dbContext.Users.Find(userId);
+        }
+        public User GetUserByEmail(string email)
+        {
+            email = email.ToLower();
+            return _dbContext.Users.FirstOrDefault(u => u.Email == email);
+        }
+        public List<User> GatAllUsers()
+        {
+            return _dbContext.Users.ToList();
+        }
+        public bool ChangeUserPassword(Guid userId, string newPassword, string oldPassword)
+        {
+            var user = _dbContext.Users.Find(userId);
+            if (user == null) return false;
+            if (user.PasswordHash != HashPassword(oldPassword, user.Salt))
+            {
+                return false; // Old password does not match
+            }
+
         }
     }
 }
