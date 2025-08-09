@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using Catalog_on_DotNet;
 using System.Windows.Markup;
+using System.Net.Http.Headers;
 
 
 
@@ -94,7 +95,6 @@ namespace Catalog_on_DotNet
         }
         public User GetUserById(Guid userId)
         {
-
             return _dbContext.Users.Find(userId);
         }
         public User GetUserByEmail(string email)
@@ -114,7 +114,13 @@ namespace Catalog_on_DotNet
             {
                 return false; // Old password does not match
             }
-
+            user.PasswordHash = HashPassword(newPassword, user.Salt);
+            _dbContext.SaveChanges();
+            return true;
+        }
+        public List<User> GetAllUsers()
+        {
+            return _dbContext.Users.ToList();
         }
     }
 }
