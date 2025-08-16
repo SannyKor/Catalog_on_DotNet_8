@@ -21,7 +21,19 @@ namespace Catalog_on_DotNet
             Console.WriteLine("введіть ім'я: ");
             string? name = Console.ReadLine();
             Console.WriteLine("введіть кількість: ");
-            int quantity = int.Parse(Console.ReadLine());
+            string? quantityInput = Console.ReadLine();
+            int quantity;
+            while(true)
+            { 
+                if (!string.IsNullOrEmpty(quantityInput) && int.TryParse(quantityInput, out quantity))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("щось пішло не так, спробуйте ще");
+                }
+            }           
             Console.WriteLine("введіть ціну: ");
             double prise = double.Parse(Console.ReadLine());
             Console.WriteLine("введіть опис: ");
@@ -198,6 +210,33 @@ namespace Catalog_on_DotNet
         }
         public void RunMainMenu()
         {
+            Console.WriteLine("вітаємо в каталозі товарів!");
+            while (true)
+            {
+                Console.WriteLine(
+                    "для входу в акаунт натисніть '1', " +
+                    "\nдля реєстрації користувача натисніть '2', " +
+                    "\nдля виходу натисніть 3: ");
+                string? authChoice = Console.ReadLine();
+                if (authChoice == "1")
+                {
+                    
+                }
+                else if (authChoice == "2")
+                {
+
+                }
+                else if (authChoice == "3")
+                {
+                    Console.WriteLine("до побачення!");
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("невірний вибір, спробуйте ще раз");
+                    continue;
+                }
+            }
             while (true)
             {
                 Console.WriteLine("виберіть один із варіантів: " +
