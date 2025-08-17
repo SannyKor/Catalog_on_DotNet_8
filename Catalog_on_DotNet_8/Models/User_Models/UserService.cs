@@ -97,9 +97,10 @@ namespace Catalog_on_DotNet
         {
             return _dbContext.Users.Find(userId);
         }
-        public User GetUserByEmail(string email)
+        public User? GetUserByEmail(string email)
         {
             email = email.ToLower();
+            
             return _dbContext.Users.FirstOrDefault(u => u.Email == email);
         }
         public List<User> GatAllUsers()

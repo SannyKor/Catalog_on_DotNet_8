@@ -208,8 +208,32 @@ namespace Catalog_on_DotNet
                 Console.WriteLine("товар за запитом відсутній");
             }
         }
+        public static string ReadPassword()
+        {
+            StringBuilder password = new StringBuilder();
+            ConsoleKeyInfo key;
+            do
+            {
+                key = Console.ReadKey(intercept: true);
+                if (key.Key != ConsoleKey.Enter && key.Key != ConsoleKey.Backspace)
+                {
+                    password.Append(key.KeyChar);
+                    Console.Write("*");
+                }
+                else if (key.Key == ConsoleKey.Backspace && password.Length > 0)
+                {
+                    password.Remove(password.Length - 1, 1);
+                    Console.Write("\b \b");
+                }
+            }
+            while (key.Key != ConsoleKey.Enter);
+            return password.ToString();
+        }
+        
         public void RunMainMenu()
         {
+            UserService userService = new UserService(new CatalogDbContext());
+            User? user = null;
             Console.WriteLine("вітаємо в каталозі товарів!");
             while (true)
             {
@@ -220,7 +244,22 @@ namespace Catalog_on_DotNet
                 string? authChoice = Console.ReadLine();
                 if (authChoice == "1")
                 {
+                    Console.WriteLine("введіть email: ");
+                    string? email = Console.ReadLine();
+                    if (string.IsNullOrEmpty(email))
+                    {
+                        Console.WriteLine("email не може бути порожнім, спробуйте ще раз");
+                        continue;
+                    }
+                    user = userService.GetUserByEmail(email);
+                    Console.WriteLine("введіть пароль: ");
+                    if (user != null)
+                    {
+                        string? password = ReadPassword();
+                        bool userVerification = userService.LoginUser(email, password);
+                    }
                     
+
                 }
                 else if (authChoice == "2")
                 {
