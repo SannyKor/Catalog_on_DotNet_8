@@ -229,8 +229,8 @@ namespace Catalog_on_DotNet
             while (key.Key != ConsoleKey.Enter);
             return password.ToString();
         }
-        
-        public void RunMainMenu()
+
+        public void AuthService()
         {
             UserService userService = new UserService(new CatalogDbContext());
             User? user = null;
@@ -244,6 +244,7 @@ namespace Catalog_on_DotNet
                 string? authChoice = Console.ReadLine();
                 if (authChoice == "1")
                 {
+                    Console.Clear();
                     Console.WriteLine("введіть email: ");
                     string? email = Console.ReadLine();
                     if (string.IsNullOrEmpty(email))
@@ -251,19 +252,67 @@ namespace Catalog_on_DotNet
                         Console.WriteLine("email не може бути порожнім, спробуйте ще раз");
                         continue;
                     }
-                    user = userService.GetUserByEmail(email);
                     Console.WriteLine("введіть пароль: ");
-                    if (user != null)
-                    {
-                        string? password = ReadPassword();
-                        bool userVerification = userService.LoginUser(email, password);
-                    }
-                    
 
+                    string? password = ReadPassword();
+                    bool userVerification = userService.LoginUser(email, password);
+                    if (userVerification)
+                    {
+                        Console.WriteLine("Вітаємо, ви успішно увійшли в акаунт!");
+                        user = userService.GetUserByEmail(email);
+                    }
+                    else
+                    {
+                        Console.WriteLine("невірний email або пароль, спробуйте ще раз");
+                        continue;
+                    }
                 }
                 else if (authChoice == "2")
                 {
-
+                    Console.Clear();
+                    Console.WriteLine("введіть email для реєстрації: ");
+                    string? email = Console.ReadLine();
+                    if (string.IsNullOrEmpty(email))
+                    {
+                        Console.WriteLine("email не може бути порожнім, спробуйте ще раз");
+                        continue;
+                    }
+                    else if (userService.GetUserByEmail(email) != null)
+                    {
+                        Console.WriteLine("користувач з таким email вже існує, спробуйте ще раз");
+                        continue;
+                    }
+                    else
+                    {
+                        Console.WriteLine("введіть пароль: ");
+                        string? password = ReadPassword();
+                        Console.WriteLine("повторіть пароль: ");
+                        string? passwordRepeat = ReadPassword();
+                        if (password.Length < 6)
+                        {
+                            Console.WriteLine("пароль має бути не менше 6 символів, спробуйте ще раз");
+                            continue;
+                        }                        
+                        else if (password != passwordRepeat)
+                        {
+                            Console.WriteLine("паролі не співпадають, спробуйте ще раз");
+                            continue;
+                        }
+                        else
+                        {  
+                            bool userAdded = userService.AddUser("newUser", email, password);
+                            if (userAdded)
+                            {
+                                Console.WriteLine("користувача успішно зареєстровано");
+                                user = userService.GetUserByEmail(email);
+                            }
+                            else
+                            {
+                                Console.WriteLine("щось пішло не так, спробуйте ще раз");
+                                continue;
+                            }
+                        }
+                    }                        
                 }
                 else if (authChoice == "3")
                 {
@@ -276,6 +325,11 @@ namespace Catalog_on_DotNet
                     continue;
                 }
             }
+        }
+        
+        public void RunMainMenu()
+        {
+            
             while (true)
             {
                 Console.WriteLine("виберіть один із варіантів: " +
