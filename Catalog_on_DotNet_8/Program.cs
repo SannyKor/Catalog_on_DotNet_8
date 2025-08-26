@@ -8,9 +8,11 @@ Console.OutputEncoding = Encoding.GetEncoding("windows-1251");
 Console.InputEncoding = Encoding.GetEncoding("windows-1251");
 
 //Storage storage = new StorageFromFile();
-Storage storage = new StorageFromDbEf();
+CatalogDbContext dbContext = new CatalogDbContext();
+Storage storage = new StorageFromDbEf(dbContext);
+UserService userService = new UserService(dbContext);
 //Storage storage = new StorageFromDB();
 Catalog catalog = new Catalog(storage);
-ConsoleUI consoleUI = new ConsoleUI(catalog);
+ConsoleUI consoleUI = new ConsoleUI(catalog, userService);
 
 consoleUI.RunMainMenu();

@@ -10,8 +10,11 @@ namespace Catalog_on_DotNet
     public class ConsoleUI
     {
         private Catalog catalog;
-        public ConsoleUI(Catalog catalog)
+        UserService userService;
+
+        public ConsoleUI(Catalog catalog, UserService userService)
         {
+            this.userService = userService;
             this.catalog = catalog;
         }
 
@@ -213,8 +216,15 @@ namespace Catalog_on_DotNet
         
         
         public void RunMainMenu()
-        {
-            
+        {            
+            AuthService authService = new AuthService(userService);
+            User? currentUser = null;
+            while (currentUser == null)
+            {
+                currentUser = authService.AuthRun();
+            }
+            Console.WriteLine($"Вітаємо, {currentUser.Name}!\n");
+
             while (true)
             {
                 Console.WriteLine("виберіть один із варіантів: " +

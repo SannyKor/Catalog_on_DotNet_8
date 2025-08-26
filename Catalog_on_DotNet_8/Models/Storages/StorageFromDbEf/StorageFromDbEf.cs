@@ -11,9 +11,9 @@ namespace Catalog_on_DotNet
     internal class StorageFromDbEf : Storage
     {
         private readonly CatalogDbContext dbContext;
-        public StorageFromDbEf()
+        public StorageFromDbEf(CatalogDbContext dbContext)
         {
-            dbContext = new CatalogDbContext();
+            this.dbContext = dbContext;
             dbContext.Database.EnsureCreated();
             if(!dbContext.Units.Any())
             {
