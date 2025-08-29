@@ -225,7 +225,67 @@ namespace Catalog_on_DotNet
             }
             Console.WriteLine($"Вітаємо, {currentUser.Name}!\n");
 
+            List<MenuItem> menu = new List<MenuItem>
+            {
+                new MenuItem ("Додати новий товар", new List <UserRole>  {UserRole.Admin}, CatalogAction.AddUnit),
+                new MenuItem("Видалити товар", new List <UserRole>  {UserRole.Admin}, CatalogAction.DeleteUnit),
+                new MenuItem("Змінити інформацію про товар", new List <UserRole>  {UserRole.Admin, UserRole.Manager}, CatalogAction.ChangeUnitInfo),
+                new MenuItem("Вивести інформацію про товар", new List <UserRole>  {UserRole.Admin, UserRole.Manager, UserRole.User}, CatalogAction.ShowUnit),
+                new MenuItem("Показати весь каталог", new List <UserRole>  {UserRole.Admin, UserRole.Manager, UserRole.User}, CatalogAction.ShowAllUnits),
+                new MenuItem("Показати рух кількості по товару", new List <UserRole>  {UserRole.Admin, UserRole.Manager}, CatalogAction.ShowQuantityHistory),
+                new MenuItem("Знайти по назві або частині назви", new List <UserRole>  {UserRole.Admin, UserRole.Manager, UserRole.User}, CatalogAction.FindUnit),
+                new MenuItem("Вийти", new List < UserRole > { UserRole.Admin, UserRole.Manager, UserRole.User }, CatalogAction.Exit)
+            };
+
+            Console.WriteLine("Головне меню:");
+            menu = menu.Where(m => m.AllowedRoles.Contains(currentUser.Role)).ToList();
+            for (int i = 0; i < menu.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {menu[i].Title}");
+            }
+            
             while (true)
+            {
+                Console.WriteLine("виберіть один із варіантів: ");
+                if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice < menu.Count)
+                {
+                    var selectedAction = menu[choice - 1];
+                    switch (selectedAction.Action)
+                    {
+                        case CatalogAction.AddUnit:
+                            CreateNewUnit();
+                            break;
+                        case CatalogAction.DeleteUnit:
+                            RemoveUnit();
+                            break;
+                        case CatalogAction.ChangeUnitInfo:
+                            ChangeUnitInfo();
+                            break;
+                        case CatalogAction.ShowUnit:
+                            ShowUnitInfo();
+                            break;
+                        case CatalogAction.ShowAllUnits:
+                            ShowAllUnitsInfo(catalog.Units);
+                            break;
+                        case CatalogAction.ShowQuantityHistory:
+                            ShowUnitQuantityHistory();
+                            break;
+                        case CatalogAction.FindUnit:
+                            FindUnitByName();
+                            break;
+                        case CatalogAction.Exit:
+                            return;
+                        default:
+                            Console.WriteLine("невірний вибір. спробуйте ще раз\n");
+                            break;
+                    }
+
+                }
+            }
+
+
+
+            /*while (true)
             {
                 Console.WriteLine("виберіть один із варіантів: " +
                     "\n1. додати новий товар; " +
@@ -268,7 +328,7 @@ namespace Catalog_on_DotNet
                         Console.WriteLine("невірний вибір. спробуйте ще раз\n");
                         break;
                 }
-            }
+            }*/
         }
 
     }
