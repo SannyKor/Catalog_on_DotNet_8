@@ -237,17 +237,18 @@ namespace Catalog_on_DotNet
                 new MenuItem("Вийти", new List < UserRole > { UserRole.Admin, UserRole.Manager, UserRole.User }, CatalogAction.Exit)
             };
 
-            Console.WriteLine("Головне меню:");
-            menu = menu.Where(m => m.AllowedRoles.Contains(currentUser.Role)).ToList();
-            for (int i = 0; i < menu.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {menu[i].Title}");
-            }
+            
             
             while (true)
             {
+                Console.WriteLine("Головне меню:");
+                menu = menu.Where(m => m.AllowedRoles.Contains(currentUser.Role)).ToList();
+                for (int i = 0; i < menu.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {menu[i].Title}");
+                }
                 Console.WriteLine("виберіть один із варіантів: ");
-                if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice < menu.Count)
+                if (int.TryParse(Console.ReadLine(), out int choice) && choice > 0 && choice <= menu.Count)
                 {
                     var selectedAction = menu[choice - 1];
                     switch (selectedAction.Action)
@@ -273,7 +274,7 @@ namespace Catalog_on_DotNet
                         case CatalogAction.FindUnit:
                             FindUnitByName();
                             break;
-                        case CatalogAction.Exit:
+                        case CatalogAction.Exit:                            
                             return;
                         default:
                             Console.WriteLine("невірний вибір. спробуйте ще раз\n");
@@ -282,6 +283,7 @@ namespace Catalog_on_DotNet
 
                 }
             }
+            
 
 
 
