@@ -52,7 +52,7 @@ namespace Catalog_on_DotNet
             bool userVerification = _userService.LoginUser(email, password);
             if (userVerification)
             {
-                Console.WriteLine("Вітаємо, ви успішно увійшли в акаунт!");
+               // Console.WriteLine("\nВітаємо, ви успішно увійшли в акаунт!");
                 return  _userService.GetUserByEmail(email);
             }
             else
@@ -66,9 +66,11 @@ namespace Catalog_on_DotNet
             Console.Clear();
             Console.WriteLine("введіть email для реєстрації: ");
             string? email = Console.ReadLine();
-            if (string.IsNullOrEmpty(email))
+            Console.WriteLine("Додайте ім'я користувача: ");
+            string? name = Console.ReadLine();
+            if (string.IsNullOrEmpty(email)||string.IsNullOrEmpty(name))
             {
-                Console.WriteLine("email не може бути порожнім, спробуйте ще раз");
+                Console.WriteLine("поля ім'я та email не можуть бути порожніми, спробуйте ще раз");
                 return null;
             }
             else if (_userService.GetUserByEmail(email) != null)
@@ -78,9 +80,9 @@ namespace Catalog_on_DotNet
             }
             else
             {
-                Console.WriteLine("введіть пароль: ");
+                Console.WriteLine("введіть пароль: \t");
                 string? password = ReadPassword();
-                Console.WriteLine("повторіть пароль: ");
+                Console.WriteLine("повторіть пароль: \t");
                 string? passwordRepeat = ReadPassword();
                 if (password.Length < 6)
                 {
@@ -94,7 +96,7 @@ namespace Catalog_on_DotNet
                 }
                 else
                 {
-                    bool userAdded = _userService.AddUser("newUser", email, password);
+                    bool userAdded = _userService.AddUser(name, email, password);
                     if (userAdded)
                     {
                         Console.WriteLine("користувача успішно зареєстровано");
@@ -124,7 +126,7 @@ namespace Catalog_on_DotNet
                     user = HandleLogin();
                     if (user != null)
                     {
-                        Console.WriteLine($"Вітаємо, {user.Name}! Ви успішно увійшли в акаунт.");
+                        //Console.WriteLine($"\nВітаємо, {user.Name}! Ви успішно увійшли в акаунт.");
                         return user; // Повертаємо користувача після успішного входу
                     }
                     else
@@ -138,7 +140,7 @@ namespace Catalog_on_DotNet
                     user = HandleRegistration();
                     if (user != null)
                     {
-                        Console.WriteLine($"Вітаємо, {user.Name}! Ви успішно зареєстровані.");
+                        Console.WriteLine($"\nВітаємо, {user.Name}! Ви успішно зареєстровані.");
                         continue;
                     }
                     else

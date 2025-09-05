@@ -64,7 +64,7 @@ namespace Catalog_on_DotNet
                 Email = email,
                 PasswordHash = passwordHash,
                 Salt = salt,
-                Role = UserRole.User,
+                Role = !_dbContext.Users.Any() ? UserRole.Admin : UserRole.User,
                 CreatedAt = DateTime.UtcNow
             };
             _dbContext.Users.Add(user);

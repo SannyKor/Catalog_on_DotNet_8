@@ -222,8 +222,13 @@ namespace Catalog_on_DotNet
             while (currentUser == null)
             {
                 currentUser = authService.AuthRun();
+                if (currentUser == null)
+                {                    
+                    return;
+                }
             }
-            Console.WriteLine($"Вітаємо, {currentUser.Name}!\n");
+            Console.Clear();
+            Console.WriteLine($"\nВітаємо, {currentUser.Name}!\n");
 
             List<MenuItem> menu = new List<MenuItem>
             {
