@@ -138,14 +138,30 @@ namespace Catalog_on_DotNet
         public void ShowUnitInfo()
         {
             Console.WriteLine("введіть артикул: ");
-            int id = int.Parse(Console.ReadLine());
+            string? query = Console.ReadLine();
+            int id = 0;
+            if (!string.IsNullOrEmpty(query))
+            {
+                if (!int.TryParse(query, out id))
+                {
+                    Console.WriteLine("Невірний формат, спробуйте ще раз");
+                    return;
+                }
+            }
+            else
+            {
+                Console.WriteLine("здається ви нічого не ввели");
+                return;
+            }
             Unit? unit = catalog.GetUnitById(id);
             if (unit == null)
             {
                 Console.WriteLine("товар не знайдено\n");
             }
-
-            UnitInfo(unit);
+            else
+            {
+                UnitInfo(unit);
+            }
 
 
         }
