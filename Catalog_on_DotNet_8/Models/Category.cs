@@ -13,7 +13,7 @@ namespace Catalog_on_DotNet
         public string? Name { get; set; }
         public int? ParentId { get; set; }
         public List<Category> SubCategories { get; set; } = new List<Category>();
-        public List<Unit> Units { get; set; } = new List<Unit>();
+        
 
     }
 }

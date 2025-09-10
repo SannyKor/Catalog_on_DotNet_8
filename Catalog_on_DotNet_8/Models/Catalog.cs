@@ -20,9 +20,9 @@ namespace Catalog_on_DotNet
             units = storage.LoadUnits();
         }
 
-        public void AddUnit(string name, string description, double price, int quantity)
+        public void AddUnit(string name, string description, double price, int quantity, Guid userId)
         {
-            Unit unit = storage.InsertUnit(name, description, price, quantity);
+            Unit unit = storage.InsertUnit(name, description, price, quantity, userId);
             units.Add(unit);
         }
 
@@ -41,9 +41,9 @@ namespace Catalog_on_DotNet
         {
             return storage.FindUnit(query);
         }
-        public void UpdateUnit(Unit unit)
+        public void UpdateUnit(Unit unit, Guid userId)
         {
-            storage.UpdateUnit(unit);
+            storage.UpdateUnit(unit, userId);
         }
         public List<Unit.SaveQuantityChange> GetUnitQuantityHistory(int id)
         {

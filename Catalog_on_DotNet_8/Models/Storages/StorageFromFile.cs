@@ -81,7 +81,7 @@ namespace Catalog_on_DotNet
             count = units.Count;
             return units;
         }
-        public override Unit InsertUnit(string name, string description, double price, int quantity)
+        public override Unit InsertUnit(string name, string description, double price, int quantity, Guid userId)
         {
             int id;
             if (count == 0)
@@ -96,7 +96,7 @@ namespace Catalog_on_DotNet
                 Price = price,
                 Quantity = quantity
             };
-            var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, unit.AddedDate);
+            var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, unit.AddedDate, userId);
             unit.QuantityHistory.Add(saveQuantityHistory);
             return unit;
         }
@@ -111,7 +111,7 @@ namespace Catalog_on_DotNet
             if (unit == null) return false;
             return true;
         }
-        public override void UpdateUnit(Unit unit)
+        public override void UpdateUnit(Unit unit, Guid userId)
         {
             Unit _unit = GetUnitById(unit.Id);
             int oldQuantity = _unit.Quantity;
@@ -122,7 +122,7 @@ namespace Catalog_on_DotNet
             _unit.Quantity = unit.Quantity;
             if (oldQuantity != _unit.Quantity)
             {
-                var saveQuantityHistory = new Unit.SaveQuantityChange(_unit.Id, _unit.Quantity, DateTime.Now);
+                var saveQuantityHistory = new Unit.SaveQuantityChange(_unit.Id, _unit.Quantity, DateTime.Now, userId);
                 _unit.QuantityHistory.Add(saveQuantityHistory);
             }
         }

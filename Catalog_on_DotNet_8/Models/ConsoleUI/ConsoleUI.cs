@@ -11,7 +11,7 @@ namespace Catalog_on_DotNet
     {
         private Catalog catalog;
         UserService userService;
-
+        User? currentUser = null;
         public ConsoleUI(Catalog catalog, UserService userService)
         {
             this.userService = userService;
@@ -42,7 +42,7 @@ namespace Catalog_on_DotNet
             Console.WriteLine("введіть опис: ");
             string? description = Console.ReadLine();
             Console.WriteLine($"name: {name} description: {description}");
-            catalog.AddUnit(name, description, prise, quantity);
+            catalog.AddUnit(name, description, prise, quantity, currentUser.Id);
         }
 
         public void RemoveUnit()
@@ -123,7 +123,7 @@ namespace Catalog_on_DotNet
                 {
                     changedUnit.Description = description;
                 }
-                catalog.UpdateUnit(changedUnit);
+                catalog.UpdateUnit(changedUnit, currentUser.Id);
             }
 
         }
@@ -234,7 +234,7 @@ namespace Catalog_on_DotNet
         public void RunMainMenu()
         {            
             AuthService authService = new AuthService(userService);
-            User? currentUser = null;
+            
             while (currentUser == null)
             {
                 currentUser = authService.AuthRun();

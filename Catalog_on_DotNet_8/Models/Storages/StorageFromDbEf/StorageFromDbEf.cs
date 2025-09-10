@@ -50,7 +50,7 @@ namespace Catalog_on_DotNet
             return quantityHistory;
         }
 
-        public override Unit InsertUnit(string name, string description, double price, int quantity)
+        public override Unit InsertUnit(string name, string description, double price, int quantity, Guid userId)
         {
             var unit = new Unit
             {
@@ -64,7 +64,7 @@ namespace Catalog_on_DotNet
             dbContext.Units.Add(unit);
             dbContext.SaveChanges();
 
-            var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, unit.AddedDate);
+            var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, unit.AddedDate, userId);
             unit.QuantityHistory.Add(saveQuantityHistory);
 
             dbContext.QuantityChanges.Add(saveQuantityHistory);
@@ -108,7 +108,7 @@ namespace Catalog_on_DotNet
             throw new NotImplementedException();
         }
 
-        public override void UpdateUnit(Unit unit)
+        public override void UpdateUnit(Unit unit, Guid userId)
         {
             var oldUnit = GetUnitById(unit.Id);
             bool wasChangedQuantity;
@@ -122,7 +122,7 @@ namespace Catalog_on_DotNet
                 oldUnit.AddedDate = unit.AddedDate;
                 if (wasChangedQuantity)
                 {
-                    var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, DateTime.Now);
+                    var saveQuantityHistory = new Unit.SaveQuantityChange(unit.Id, unit.Quantity, DateTime.Now, userId);
                     oldUnit.QuantityHistory.Add(saveQuantityHistory);
                     dbContext.QuantityChanges.Add(saveQuantityHistory);
                 }

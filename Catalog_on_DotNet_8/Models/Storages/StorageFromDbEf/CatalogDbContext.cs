@@ -12,6 +12,8 @@ namespace Catalog_on_DotNet
         public DbSet<Unit> Units { get; set; }
         public DbSet<Unit.SaveQuantityChange> QuantityChanges { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
