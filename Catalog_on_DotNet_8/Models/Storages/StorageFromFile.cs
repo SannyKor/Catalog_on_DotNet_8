@@ -35,6 +35,7 @@ namespace Catalog_on_DotNet
                             writer.Write(history.UnitId);
                             writer.Write(history.NewUnitQuantity);
                             writer.Write(history.DateOfChange.Ticks);
+                            writer.Write(history.UserId.ToByteArray());
                         }
                     }
                 }
@@ -70,7 +71,8 @@ namespace Catalog_on_DotNet
                                 int unitId = reader.ReadInt32();
                                 int quantity = reader.ReadInt32();
                                 DateTime dateTime = new DateTime(reader.ReadInt64());
-                                var quantityHistory = new Unit.SaveQuantityChange(unitId, quantity, dateTime);
+                                Guid userId = new Guid(reader.ReadBytes(16));
+                                var quantityHistory = new Unit.SaveQuantityChange(unitId, quantity, dateTime, userId);
                                 unit.QuantityHistory.Add(quantityHistory);
                             }
                             units.Add(unit);

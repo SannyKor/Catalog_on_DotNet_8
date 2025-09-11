@@ -3,6 +3,7 @@ using System;
 using Catalog_on_DotNet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Catalog_on_DotNet_8.Migrations
 {
     [DbContext(typeof(CatalogDbContext))]
-    partial class CatalogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250911212414_AddCategories")]
+    partial class AddCategories
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.7");
@@ -32,9 +35,14 @@ namespace Catalog_on_DotNet_8.Migrations
                     b.Property<int?>("ParentId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("UnitId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("UnitId");
 
                     b.ToTable("Categories");
                 });
@@ -123,26 +131,15 @@ namespace Catalog_on_DotNet_8.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("CategoryUnit", b =>
-                {
-                    b.Property<int>("CategoriesId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("UnitsId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("CategoriesId", "UnitsId");
-
-                    b.HasIndex("UnitsId");
-
-                    b.ToTable("CategoryUnit");
-                });
-
             modelBuilder.Entity("Catalog_on_DotNet.Category", b =>
                 {
                     b.HasOne("Catalog_on_DotNet.Category", null)
                         .WithMany("SubCategories")
                         .HasForeignKey("CategoryId");
+
+                    b.HasOne("Catalog_on_DotNet.Unit", null)
+                        .WithMany("Categories")
+                        .HasForeignKey("UnitId");
                 });
 
             modelBuilder.Entity("Catalog_on_DotNet.Unit+SaveQuantityChange", b =>
@@ -154,21 +151,6 @@ namespace Catalog_on_DotNet_8.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CategoryUnit", b =>
-                {
-                    b.HasOne("Catalog_on_DotNet.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Catalog_on_DotNet.Unit", null)
-                        .WithMany()
-                        .HasForeignKey("UnitsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Catalog_on_DotNet.Category", b =>
                 {
                     b.Navigation("SubCategories");
@@ -176,6 +158,8 @@ namespace Catalog_on_DotNet_8.Migrations
 
             modelBuilder.Entity("Catalog_on_DotNet.Unit", b =>
                 {
+                    b.Navigation("Categories");
+
                     b.Navigation("QuantityHistory");
                 });
 #pragma warning restore 612, 618

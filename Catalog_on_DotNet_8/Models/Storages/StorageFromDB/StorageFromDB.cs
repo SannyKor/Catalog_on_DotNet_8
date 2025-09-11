@@ -184,7 +184,8 @@ namespace Catalog_on_DotNet
                         {
                             int quantity = Convert.ToInt32(reader["new_quantity"]);
                             DateTime dateOfChenge = Convert.ToDateTime(reader["change_time"]);
-                            var saveQuantity = new Unit.SaveQuantityChange(id, quantity, dateOfChenge);
+                            Guid userId = Guid.Empty; // Placeholder for userId, as it's not stored in the current schema
+                            var saveQuantity = new Unit.SaveQuantityChange(id, quantity, dateOfChenge, userId);
                             quantityHistory.Add(saveQuantity);
                         }
                         return quantityHistory;

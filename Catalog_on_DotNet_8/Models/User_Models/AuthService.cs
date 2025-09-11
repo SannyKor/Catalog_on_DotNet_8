@@ -82,7 +82,7 @@ namespace Catalog_on_DotNet
             {
                 Console.WriteLine("введіть пароль: \t");
                 string? password = ReadPassword();
-                Console.WriteLine("повторіть пароль: \t");
+                Console.WriteLine("\nповторіть пароль: \t");
                 string? passwordRepeat = ReadPassword();
                 if (password.Length < 6)
                 {
@@ -99,7 +99,7 @@ namespace Catalog_on_DotNet
                     bool userAdded = _userService.AddUser(name, email, password);
                     if (userAdded)
                     {
-                        Console.WriteLine("користувача успішно зареєстровано");
+                        Console.WriteLine("\nкористувача успішно зареєстровано\n");
                         return _userService.GetUserByEmail(email);
                     }
                     else
