@@ -9,6 +9,12 @@ namespace Catalog_on_DotNet
 {
     public class Category
     {
+        public Category() { }
+        public Category(string name, int? parentId = null)
+        {
+            ParentId = parentId;
+            Name = name;    
+        }
         public int Id { get; set; }
         public string? Name { get; set; }
         public int? ParentId { get; set; }
