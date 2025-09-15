@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,8 +40,19 @@ namespace Catalog_on_DotNet
         }
         public List<Unit> CategoryHasUnits(int categoryId)
         {
-         
+            return _dbContext.Categories
+                .Where(c => c.Id == categoryId)
+                .Include(c => c.Units)
+                .SelectMany(c => c.Units)
+                .ToList();
         }
+        public List<Category> ShowSubCategories(int categoryId)
+        {
+            return _dbContext.Categories
+                .Where(c => c.ParentId == categoryId)
+                .ToList();
+        }
+
 
     }
 }
