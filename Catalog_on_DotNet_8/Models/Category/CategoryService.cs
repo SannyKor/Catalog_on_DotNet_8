@@ -52,7 +52,35 @@ namespace Catalog_on_DotNet
                 .Where(c => c.ParentId == categoryId)
                 .ToList();
         }
-
+        public List<Category> GetCategoriesTree()
+        {
+            var categories = _dbContext.Categories.ToList();
+            List<Category> rootCategories = new List<Category>();
+            foreach (var category in categories)
+            {
+                if (category.ParentId == null)
+                {
+                    rootCategories.Add(category);
+                }
+                else 
+                {
+                    Category parentCategory = GetCategoryById(category.ParentId.Value);
+                    parentCategory.SubCategories.Add(category);
+                }
+            }
+            return rootCategories;
+        }
+        public void ShowCategoriesTree(List<Category> categories, string indent = "")
+        {
+            foreach (var  category in categories)
+            {
+                Console.WriteLine($"{indent} - {category.Name};");
+                if (category.SubCategories.Any())
+                {
+                    ShowCategoriesTree(category.SubCategories, indent + "   ");// recurtion function to show subcategories
+                }
+            }
+        }
 
     }
 }
