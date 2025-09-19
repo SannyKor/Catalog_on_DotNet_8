@@ -42,7 +42,8 @@ namespace Catalog_on_DotNet
             Console.WriteLine("введіть опис: ");
             string? description = Console.ReadLine();
             Console.WriteLine($"name: {name} description: {description}");
-            catalog.AddUnit(name, description, prise, quantity, currentUser.Id);
+            Unit addedUnit = catalog.AddUnit(name, description, prise, quantity, currentUser.Id);
+            //Console.WriteLine("Додайте категорії до яких буде належати цей товар");
         }
 
         public void RemoveUnit()

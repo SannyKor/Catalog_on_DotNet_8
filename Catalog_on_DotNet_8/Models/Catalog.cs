@@ -20,10 +20,11 @@ namespace Catalog_on_DotNet
             units = storage.LoadUnits();
         }
 
-        public void AddUnit(string name, string description, double price, int quantity, Guid userId)
+        public Unit AddUnit(string name, string description, double price, int quantity, Guid userId)
         {
             Unit unit = storage.InsertUnit(name, description, price, quantity, userId);
             units.Add(unit);
+            return unit;
         }
 
         public Unit? GetUnitById(int id)
