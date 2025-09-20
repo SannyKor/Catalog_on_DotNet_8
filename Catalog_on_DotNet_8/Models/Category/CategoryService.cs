@@ -92,7 +92,7 @@ namespace Catalog_on_DotNet
             }
             return hasNoChildrenCategories;
         }
-        public void CategoryManu()
+        public void AddUnitToCategory(Unit unit)
         {
             List<Category> categories = GetAllCategories();
             List<Category> categoriesTree = GetCategoriesTree(categories);
@@ -110,9 +110,46 @@ namespace Catalog_on_DotNet
                 if (selectedCategory.SubCategories.Any())
                 {
                     ShowCategoriesTree(selectedCategory.SubCategories, "  ");
+                    Console.WriteLine("Оберіть підкатегорію (введіть назву категорії) \nабо додайте нову підкатегорію (введіть 'add'):");
+                    string? subCategoryInput = Console.ReadLine();
+                    if (!string.IsNullOrEmpty(subCategoryInput))
+                    {
+                        if (subCategoryInput.ToLower() == "add")
+                        {
+                            Console.WriteLine("Введіть назву нової підкатегорії:");
+                            string? newSubCategoryName = Console.ReadLine();
+                            Console.WriteLine("Введіть назву категорії, до якої буде додана підкатегорія:");
+                            string? parentCategoryName = Console.ReadLine();
+                            if (!string.IsNullOrEmpty(newSubCategoryName) && !string.IsNullOrEmpty(parentCategoryName))
+                            {
+                                Category? parentCategory = categories.FirstOrDefault(c => c.Name == parentCategoryName);
+                                if (parentCategory != null)
+                                {
+                                    Category newSubCategory = new Category(newSubCategoryName, parentCategory.Id);
+                                    AddCategory(newSubCategory);
+                                    parentCategory.SubCategories.Add(newSubCategory);
+                                    Console.WriteLine($"Підкатегорія '{newSubCategoryName}' додана до категорії '{parentCategoryName}'.");
+                                }                                
+                                else
+                                {
+                                    Console.WriteLine($"Категорія з назвою '{parentCategoryName}' не знайдена.");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Назва підкатегорії або батьківської категорії не може бути порожньою.");
+                            }
+                        }
+                        else if (categories.Any(c => c.Name == subCategoryInput))
+                        {
+                            Category selectedSubCategory = categories.First(c => c.Name == subCategoryInput);
+                            selectedSubCategory.Units.Add(unit);
+                            unit.Categories.Add(selectedSubCategory);
+                        }
+                    }
                 }
             }
-            //далі вибір підкатегорії або додати нову підкатегорію
+            
 
         }
         public void AssignUnitToCategory(int unitId, List <Category> assignCategories)

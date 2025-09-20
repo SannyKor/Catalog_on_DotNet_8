@@ -12,10 +12,12 @@ namespace Catalog_on_DotNet
         private Catalog catalog;
         UserService userService;
         User? currentUser = null;
-        public ConsoleUI(Catalog catalog, UserService userService)
+        CategoryService categoryService;
+        public ConsoleUI(Catalog catalog, UserService userService, CategoryService categoryService)
         {
             this.userService = userService;
             this.catalog = catalog;
+            this.categoryService = categoryService;
         }
 
 
@@ -43,7 +45,25 @@ namespace Catalog_on_DotNet
             string? description = Console.ReadLine();
             Console.WriteLine($"name: {name} description: {description}");
             Unit addedUnit = catalog.AddUnit(name, description, prise, quantity, currentUser.Id);
-            //Console.WriteLine("Додайте категорії до яких буде належати цей товар");
+            categoryService.AddUnitToCategory(addedUnit);
+            while (true)
+            {
+                Console.WriteLine("Додати товар в іншу категорію? (y/n)");
+                string? choise = Console.ReadLine();
+                if (choise == "y")
+                {
+                    categoryService.AddUnitToCategory(addedUnit);
+                }
+                else if (choise == "n")
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("невірний вибір, спробуйте ще раз");
+                }
+            }
+
         }
 
         public void RemoveUnit()
