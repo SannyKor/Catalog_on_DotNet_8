@@ -139,11 +139,11 @@ namespace Catalog_on_DotNet
                             while (true)
                             {
                                 ShowCategoriesTree(selectedCategory.SubCategories, "  ");
-                                Console.WriteLine("Оберіть підкатегорію (введіть назву категорії) \nабо додайте нову підкатегорію (введіть 'add'):");
+                                Console.WriteLine("Вибрати категорію (введіть 'n') \nабо додати нову підкатегорію (введіть 'y'):");
                                 string? subCategoryInput = Console.ReadLine();
                                 if (!string.IsNullOrEmpty(subCategoryInput))
                                 {
-                                    if (subCategoryInput.ToLower() == "add" || !selectedCategory.SubCategories.Any())
+                                    if (subCategoryInput.ToLower() == "y")
                                     {
                                         Console.WriteLine("Введіть назву нової підкатегорії:");
                                         string? newSubCategoryName = Console.ReadLine();
@@ -170,14 +170,18 @@ namespace Catalog_on_DotNet
                                             Console.WriteLine("Назва підкатегорії або батьківської категорії не може бути порожньою.");
                                         }
                                     }
-                                    else if (categories.Any(c => c.Name == subCategoryInput))
+                                    else if (subCategoryInput.ToLower() == "n")
                                     {
                                         Category selectedSubCategory = categories.First(c => c.Name == subCategoryInput);
                                         selectedSubCategory.Units.Add(unit);
                                         unit.Categories.Add(selectedSubCategory);
                                         break;
                                     }
-                                }
+                                    else
+                                    {
+                                        Console.WriteLine("Некоректне введення. Спробуйте ще раз.");
+                                    }
+                            }
                                 else 
                                 { Console.WriteLine("Некоректне введення. Спробуйте ще раз."); }
                             }
