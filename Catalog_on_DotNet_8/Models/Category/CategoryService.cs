@@ -63,17 +63,20 @@ namespace Catalog_on_DotNet
                 }
                 else 
                 {
-                    Category parentCategory = GetCategoryById(category.ParentId.Value);
+                    Category parentCategory = categories.FirstOrDefault(c => c.ParentId == category.Id);
                     parentCategory.SubCategories.Add(category);
                 }
             }
             return rootCategories;
         }
         public void ShowCategoriesTree(List<Category> categories, string indent = "")
-        {            
+        {
+            
             foreach (var  category in categories)
-            {                
+            {
+                        
                 Console.WriteLine($"{indent} - {category.Name};");
+                
                 if (category.SubCategories.Any())
                 {
                     ShowCategoriesTree(category.SubCategories, indent + "   ");// recurtion function to show subcategories
@@ -95,14 +98,23 @@ namespace Catalog_on_DotNet
         public void AddUnitToCategory(Unit unit)
         {
             List<Category> categories = GetAllCategories();
-            List<Category> categoriesTree = GetCategoriesTree(categories);
-                 
+            List<Category> rootCategories = new List<Category>();
+            for (int i = 0; i < categories.Count; i++)
+            {
+                if (categories[i].ParentId == null)
+                {
+                    rootCategories.Add(categories[i]);
+
+                }
+            }
+            //List<Category> categoriesTree = GetCategoriesTree(categories);
+
 
             while (true)
             {
                 Console.WriteLine("Обрати головну категорію (n) \n створити нову категорію (y)");
                 string? input = Console.ReadLine();
-                if (!string.IsNullOrEmpty(input) && input == "y" || categoriesTree.Count == 0)
+                if (!string.IsNullOrEmpty(input) && input == "y")
                 {
                     while (true)
                     {
@@ -112,8 +124,7 @@ namespace Catalog_on_DotNet
                         {
                             Category newCategory = new Category(newCategoryName);
                             AddCategory(newCategory);
-                            Console.WriteLine($"Ви створили категорію: '{newCategoryName}'.");
-                            categoriesTree.Add(newCategory);
+                            Console.WriteLine($"Ви створили категорію: '{newCategoryName}'.");                            
                             break;
                         }
                         else
@@ -124,26 +135,27 @@ namespace Catalog_on_DotNet
                 }                
                 else if (!string.IsNullOrEmpty(input) && input == "n")
                 {
-                    for (int i = 0; i < categoriesTree.Count; i++)
+                    
+                    for(int i = 0; i < rootCategories.Count; i++)
                     {
-                        Console.WriteLine($"{i + 1}. {categories[i].Name}");
+                        Console.WriteLine($"{i + 1}. {rootCategories[i].Name}");
                     }
                     Console.WriteLine("Оберіть категорію за номером:");
                     string? categoryNumberInput = Console.ReadLine();
-                    if (int.TryParse(categoryNumberInput, out int number) && number > 0 && number >= categoriesTree.Count)
+                    if (int.TryParse(categoryNumberInput, out int number) && number > 0 && number >= rootCategories.Count)
                     {
-                        Console.WriteLine("Структура обраної категорії:");
-                        Category selectedCategory = categoriesTree[number - 1];
+                        Console.WriteLine("Структура обраної категорії:");                        
+                        Category selectedCategory = rootCategories[number - 1];
                         Console.WriteLine($"{selectedCategory.Name}; \n");
-                        //продовжити перевірку
-                            while (true)
-                            {
-                                ShowCategoriesTree(selectedCategory.SubCategories, "  ");
+                        ShowCategoriesTree(selectedCategory.SubCategories, "  ");
+                        
+                        while (true)
+                            {                                
                                 Console.WriteLine("Вибрати категорію (введіть 'n') \nабо додати нову підкатегорію (введіть 'y'):");
-                                string? subCategoryInput = Console.ReadLine();
-                                if (!string.IsNullOrEmpty(subCategoryInput))
+                                string? InPutChoiсe = Console.ReadLine();
+                                if (!string.IsNullOrEmpty(InPutChoiсe))
                                 {
-                                    if (subCategoryInput.ToLower() == "y")
+                                    if (InPutChoiсe.ToLower() == "y")
                                     {
                                         Console.WriteLine("Введіть назву нової підкатегорії:");
                                         string? newSubCategoryName = Console.ReadLine();
@@ -170,11 +182,11 @@ namespace Catalog_on_DotNet
                                             Console.WriteLine("Назва підкатегорії або батьківської категорії не може бути порожньою.");
                                         }
                                     }
-                                    else if (subCategoryInput.ToLower() == "n")
+                                    else if (InPutChoiсe.ToLower() == "n")
                                     {
-                                        Category selectedSubCategory = categories.First(c => c.Name == subCategoryInput);
-                                        selectedSubCategory.Units.Add(unit);
-                                        unit.Categories.Add(selectedSubCategory);
+                                        //Category selectedSubCategory = categories.First(c => c.Name == subCategoryInput);
+                                        //selectedSubCategory.Units.Add(unit);
+                                        //unit.Categories.Add(selectedSubCategory);
                                         break;
                                     }
                                     else
