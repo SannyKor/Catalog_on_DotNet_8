@@ -59,15 +59,20 @@ namespace Catalog_on_DotNet
             {
                 if (category.ParentId == null)
                 {
+                    FillSubCategories(category, categories);
                     rootCategories.Add(category);
-                }
-                else 
-                {
-                    Category parentCategory = categories.FirstOrDefault(c => c.ParentId == category.Id);
-                    parentCategory.SubCategories.Add(category);
-                }
+                }                
             }
             return rootCategories;
+        }
+        private void FillSubCategories(Category parent, List<Category> categories)
+        {
+            var subCategories = categories.Where(c => c.ParentId == parent.Id).ToList();
+            foreach (var category in subCategories)
+            {
+                parent.SubCategories.Add(category);
+                FillSubCategories(category, categories); // recurtion function to fill subcategories
+            }
         }
         public void ShowCategoriesTree(List<Category> categories, string indent = "")
         {
@@ -95,6 +100,7 @@ namespace Catalog_on_DotNet
             }
             return hasNoChildrenCategories;
         }
+        
         public void AddUnitToCategory(Unit unit)
         {
             List<Category> categories = GetAllCategories();

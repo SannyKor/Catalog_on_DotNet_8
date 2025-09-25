@@ -248,10 +248,119 @@ namespace Catalog_on_DotNet
                 Console.WriteLine("товар за запитом відсутній");
             }
         }
-        
+        public void CategoriesMenu()
+        {
+            List<Category> categories = categoryService.GetAllCategories();
+            while (true)
+            {
+                Console.WriteLine(
+                    "Меню категорій: " +
+                    "\n1. Показати всі категорії " +
+                    "\n2. Додати категорію " +
+                    "\n3. Видалити категорію " +
+                    "\n4. Редагувати категорію " +
+                    "\n5.  " +
+                    "\n6.  " +
+                    "\n7. Вийти з меню категорій" +
+                    "\n\n Виберіть пункт меню за номером: ");
+                string? input = Console.ReadLine();
+                switch (input)
+                {
+                    case "1":                       
+                        Console.WriteLine("Список усіх категорій:");
+                        categoryService.ShowCategoriesTree(categoryService.GetCategoriesTree(categories));
+                        break;
 
-        
-        
+                    case "2":
+                        Console.WriteLine("Додавання нової категорії:");
+                        Console.WriteLine("Введіть назву нової категорії:");
+                        string? newCategoryName = Console.ReadLine();
+                        if (!string.IsNullOrEmpty(newCategoryName))
+                        {
+                            Category newCategory = new Category(newCategoryName);
+                            categoryService.AddCategory(newCategory);
+                            Console.WriteLine($"Ви створили категорію: '{newCategoryName}'.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Назва категорії не може бути порожньою.");
+                        }
+                        break;
+
+                    case "3":
+                        Console.WriteLine("Видалення категорії:");
+                        Console.WriteLine("Введіть назву категорії, яку бажаєте видалити:");
+                        string? categoryToDelete = Console.ReadLine();
+                        if (!string.IsNullOrEmpty(categoryToDelete))
+                        {
+                            var category = categories.FirstOrDefault(c => c.Name == categoryToDelete);
+                            if (category != null)
+                            {
+                                if (!category.Units.Any() && !category.SubCategories.Any())
+                                {
+                                    categoryService.RemoveCategory(category.Id);
+                                    Console.WriteLine($"Категорія '{categoryToDelete}' успішно видалена.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Категорія '{categoryToDelete}' не може бути видалена, оскільки вона містить підкатегорії або товари.");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Категорія з назвою '{categoryToDelete}' не знайдена.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Назва категорії не може бути порожньою.");
+                        }
+                        break;
+
+                    case "4":
+                        Console.WriteLine("Редагування категорії:");
+                        Console.WriteLine("Введіть назву категорії, яку бажаєте редагувати:");
+                        string? categoryToEdit = Console.ReadLine();
+                        if (!string.IsNullOrEmpty(categoryToEdit))
+                        {
+                            var category = categories.FirstOrDefault(c => c.Name == categoryToEdit);
+                            if (category != null)
+                            {
+                                Console.WriteLine("Введіть нову назву категорії:");
+                                string? newName = Console.ReadLine();
+                                if (string.IsNullOrEmpty(newName))
+                                {
+                                    category.Name = newName;
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Категорія з назвою '{categoryToEdit}' не знайдена.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Щось пішло не так введіть назву ще раз.");
+                        }
+                        break;
+
+                    case "5":
+                        break;
+
+                    case "6":
+                        break;
+
+                    case "7":
+                        Console.WriteLine("Вихід з меню категорій.");
+                        return;
+                }
+
+            }
+        }
+
+
+
+
         public void RunMainMenu()
         {            
             AuthService authService = new AuthService(userService);
@@ -276,7 +385,8 @@ namespace Catalog_on_DotNet
                 new MenuItem("Показати весь каталог", new List <UserRole>  {UserRole.Admin, UserRole.Manager, UserRole.User}, CatalogAction.ShowAllUnits),
                 new MenuItem("Показати рух кількості по товару", new List <UserRole>  {UserRole.Admin, UserRole.Manager}, CatalogAction.ShowQuantityHistory),
                 new MenuItem("Знайти по назві або частині назви", new List <UserRole>  {UserRole.Admin, UserRole.Manager, UserRole.User}, CatalogAction.FindUnit),
-                new MenuItem("Вийти", new List < UserRole > { UserRole.Admin, UserRole.Manager, UserRole.User }, CatalogAction.Exit)
+                new MenuItem("Меню категорій", new List < UserRole > { UserRole.Admin}, CatalogAction.CategoriesMenu),
+                new MenuItem("Вийти", new List < UserRole > { UserRole.Admin, UserRole.Manager, UserRole.User }, CatalogAction.Exit)                
             };
 
             
@@ -315,6 +425,9 @@ namespace Catalog_on_DotNet
                             break;
                         case CatalogAction.FindUnit:
                             FindUnitByName();
+                            break;
+                        case CatalogAction.CategoriesMenu:
+                            CategoriesMenu();
                             break;
                         case CatalogAction.Exit:                            
                             return;
