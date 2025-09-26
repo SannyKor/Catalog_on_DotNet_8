@@ -46,6 +46,7 @@ namespace Catalog_on_DotNet
                 .SelectMany(c => c.Units)
                 .ToList();
         }
+        
         public List<Category> ShowSubCategories(int categoryId)
         {
             return _dbContext.Categories
@@ -74,6 +75,7 @@ namespace Catalog_on_DotNet
                 FillSubCategories(category, categories); // recurtion function to fill subcategories
             }
         }
+
         public void ShowCategoriesTree(List<Category> categories, string indent = "")
         {
             
@@ -152,7 +154,7 @@ namespace Catalog_on_DotNet
                     {
                         Console.WriteLine("Структура обраної категорії:");                        
                         Category selectedCategory = rootCategories[number - 1];
-                        Console.WriteLine($"{selectedCategory.Name}; \n");
+                        Console.WriteLine($"{selectedCategory.Name};");
                         ShowCategoriesTree(selectedCategory.SubCategories, "  ");
                         
                         while (true)
@@ -176,7 +178,7 @@ namespace Catalog_on_DotNet
                                                 AddCategory(newSubCategory);
                                                 parentCategory.SubCategories.Add(newSubCategory);
                                                 Console.WriteLine($"Підкатегорія '{newSubCategoryName}' додана до категорії '{parentCategoryName}'.");
-                                                
+                                            break;
                                             }
                                             else
                                             {

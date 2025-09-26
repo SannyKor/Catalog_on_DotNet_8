@@ -273,18 +273,82 @@ namespace Catalog_on_DotNet
 
                     case "2":
                         Console.WriteLine("Додавання нової категорії:");
-                        Console.WriteLine("Введіть назву нової категорії:");
-                        string? newCategoryName = Console.ReadLine();
-                        if (!string.IsNullOrEmpty(newCategoryName))
+                        bool validInput = false;
+                        do
                         {
-                            Category newCategory = new Category(newCategoryName);
-                            categoryService.AddCategory(newCategory);
-                            Console.WriteLine($"Ви створили категорію: '{newCategoryName}'.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Назва категорії не може бути порожньою.");
-                        }
+                            Console.WriteLine("Створити головну категорію натисніть(n), додати підкатегорію натисніть (y)");
+                            ConsoleKeyInfo key = Console.ReadKey(true);
+                            Console.WriteLine();
+                            char choise = char.ToLower(key.KeyChar);
+                            if (choise == 'n')
+                            {
+                                while (true)
+                                {
+                                    Console.WriteLine("Введіть назву нової категорії:");
+                                    string? newCategoryName = Console.ReadLine();
+                                    if (!string.IsNullOrEmpty(newCategoryName))
+                                    {
+                                        Category newCategory = new Category(newCategoryName);
+                                        categoryService.AddCategory(newCategory);
+                                        categories = categoryService.GetAllCategories();
+                                        Console.WriteLine($"Ви створили категорію: '{newCategoryName}'.");
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Назва категорії не може бути порожньою.");
+                                    }                                    
+                                }
+                                validInput = true;
+                            }
+                            else if (choise == 'y')
+                            {
+                                while (true)
+                                {
+                                    Console.WriteLine("Введіть назву нової підкатегорії:");
+                                    string? newSubCategoryName = Console.ReadLine();
+                                    
+
+                                    Console.WriteLine("Введіть назву категорії до якої буде додано підкатегорію:");
+                                    string? parentCategoryName = Console.ReadLine();
+                                   
+
+                                    if (!string.IsNullOrEmpty(newSubCategoryName) && !string.IsNullOrEmpty(parentCategoryName))
+                                    {
+                                        bool exists = categories.Any(c => String.Equals(c.Name, newSubCategoryName, StringComparison.OrdinalIgnoreCase));
+                                        Category? parentCategory = categories.FirstOrDefault(c => c.Name == parentCategoryName);
+                                        if (!exists && parentCategory != null)
+                                        {
+                                            Category newSubCategory = new Category(newSubCategoryName, parentCategory.Id);
+                                            categoryService.AddCategory(newSubCategory);
+                                            categories = categoryService.GetAllCategories();
+                                            Console.WriteLine($"Ви створили категорію: '{newSubCategoryName}'.");
+                                            break;
+                                        }
+                                        else if (exists)
+                                        {
+                                            Console.WriteLine($"Категорія з назвою '{newSubCategoryName}' вже існує. Введіть іншу назву.");
+                                        }
+                                        else if (parentCategory == null)
+                                        {
+                                            Console.WriteLine($"Категорія з назвою '{parentCategoryName}' не знайдена. \n " +
+                                                              $"Переконайтесь в правильності вводу.");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Назва категорії та назва батьківської категорії не можуть бути порожніми.");
+                                    }
+                                }                                
+                                validInput = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("невірний вибір, спробуйте ще раз");
+                            }
+
+                        } while (!validInput);
+                        
                         break;
 
                     case "3":
