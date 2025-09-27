@@ -131,5 +131,18 @@ namespace Catalog_on_DotNet
             }
 
         }
+        public void AddUnitToCategory(Unit unit, Category category)
+        {
+            Unit? _unit = unit;
+            Category? _category = category;
+            if (_unit != null && _category != null)
+            {
+                if (!_unit.Categories.Any(c => c.Id == _category.Id))
+                {
+                    _unit.Categories.Add(_category);                   
+                    dbContext.SaveChanges();
+                }
+            }
+        }
     }
 }
