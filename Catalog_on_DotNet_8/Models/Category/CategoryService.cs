@@ -66,12 +66,15 @@ namespace Catalog_on_DotNet
             }
             return rootCategories;
         }
-        private void FillSubCategories(Category parent, List<Category> categories)
+        private void FillSubCategories(Category parentCategory, List<Category> categories)
         {
-            var subCategories = categories.Where(c => c.ParentId == parent.Id).ToList();
+            var subCategories = categories.Where(c => c.ParentId == parentCategory.Id).ToList();
             foreach (var category in subCategories)
             {
-                parent.SubCategories.Add(category);
+                if(!parentCategory.SubCategories.Contains(category))
+                {
+                    parentCategory.SubCategories.Add(category);
+                }                
                 FillSubCategories(category, categories); // recurtion function to fill subcategories
             }
         }
@@ -89,6 +92,19 @@ namespace Catalog_on_DotNet
                     ShowCategoriesTree(category.SubCategories, indent + "   ");// recurtion function to show subcategories
                 }                
             }            
+        }
+        public List<Category> GetRootCategories()
+        {
+            List<Category> categories = GetAllCategories();
+            List<Category> rootCategories = new List<Category>();
+            foreach (var category in categories)
+            {
+                if (category.ParentId == null)
+                {
+                    rootCategories.Add(category);
+                }
+            }
+            return rootCategories;
         }
         public List<Category> GetNoChildrenCategories(List<Category> categories)
         {            
