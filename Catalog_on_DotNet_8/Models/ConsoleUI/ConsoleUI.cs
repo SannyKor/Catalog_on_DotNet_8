@@ -26,44 +26,68 @@ namespace Catalog_on_DotNet
             Console.WriteLine("введіть ім'я: ");
             string? name = Console.ReadLine();
             Console.WriteLine("введіть кількість: ");
-            string? quantityInput = Console.ReadLine();
             int quantity;
-            while(true)
-            { 
+            while (true)
+            {
+                string? quantityInput = Console.ReadLine();
+                
                 if (!string.IsNullOrEmpty(quantityInput) && int.TryParse(quantityInput, out quantity))
-                {
                     break;
-                }
                 else
-                {
                     Console.WriteLine("щось пішло не так, спробуйте ще");
-                }
             }           
             Console.WriteLine("введіть ціну: ");
-            double prise = double.Parse(Console.ReadLine());
+            double prise;
+            while (true)
+            {
+                string? priseInput = Console.ReadLine();
+
+                if (!string.IsNullOrEmpty(priseInput) && double.TryParse(priseInput, out prise))                
+                    break;                
+                else
+                    Console.WriteLine("щось пішло не так, спробуйте ще");                
+            }
             Console.WriteLine("введіть опис: ");
             string? description = Console.ReadLine();
             Console.WriteLine($"name: {name} description: {description}");
             Unit addedUnit = catalog.AddUnit(name, description, prise, quantity, currentUser.Id);
-            categoryService.AddUnitToCategory(addedUnit);
+            AddUnitToCategory(addedUnit.Id);
+        }
+        public void AddUnitToCategory(int unitId)
+        {
             while (true)
-            {
-                Console.WriteLine("Додати товар в іншу категорію? (y/n)");
-                string? choise = Console.ReadLine();
-                if (choise == "y")
+            { 
+            Console.WriteLine("Виберіть категорію зі списку до якої буде додано товар: ");
+                categoryService.ShowCategoriesTree(categoryService.GetCategoriesTree(categoryService.GetAllCategories()));
+                string? categoryName = Console.ReadLine();
+                if (!string.IsNullOrEmpty(categoryName))
                 {
-                    categoryService.AddUnitToCategory(addedUnit);
-                }
-                else if (choise == "n")
-                {
-                    break;
+                   if (categoryService.AssignUnitToCategory(unitId, categoryName))
+                   {
+                        Console.WriteLine($"Товар додано в категорію '{categoryName}'");
+                   }
+                   else
+                   {
+                        Console.WriteLine($"Категорія з назвою '{categoryName}' не знайдена. \n " +
+                                          $"Переконайтесь в правильності вводу.");
+                   }
                 }
                 else
                 {
-                    Console.WriteLine("невірний вибір, спробуйте ще раз");
+                    Console.WriteLine("Назва категорії не може бути порожньою.");
                 }
+                Console.WriteLine("Додати товар в іншу категорію? (y/n)");
+                string? choise = Console.ReadLine();
+
+                if (choise == "y")
+                    continue;
+                else if (choise == "n")
+                    break;
+                else
+                    Console.WriteLine("невірний вибір, спробуйте ще раз");
             }
 
+            
         }
 
         public void RemoveUnit()
@@ -246,6 +270,22 @@ namespace Catalog_on_DotNet
             else
             {
                 Console.WriteLine("товар за запитом відсутній");
+            }
+        }
+        public void ShowUnitsInCategory()
+        {
+            Console.WriteLine("Введіть назву категорії: \n");
+            string? categoryName = Console.ReadLine();
+            if (!string.IsNullOrEmpty(categoryName))
+            {
+                if (categoryService.GetCategoryByName(categoryName) != null)
+                { 
+                categoryService.ShowUnitsInCategory(categoryName);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Назва категорії не може бути порожньою.");
             }
         }
         public void CategoriesMenu()
@@ -450,7 +490,10 @@ namespace Catalog_on_DotNet
                 new MenuItem("Показати рух кількості по товару", new List <UserRole>  {UserRole.Admin, UserRole.Manager}, CatalogAction.ShowQuantityHistory),
                 new MenuItem("Знайти по назві або частині назви", new List <UserRole>  {UserRole.Admin, UserRole.Manager, UserRole.User}, CatalogAction.FindUnit),
                 new MenuItem("Меню категорій", new List < UserRole > { UserRole.Admin}, CatalogAction.CategoriesMenu),
-                new MenuItem("Вийти", new List < UserRole > { UserRole.Admin, UserRole.Manager, UserRole.User }, CatalogAction.Exit)                
+                new MenuItem("Розгорнути каталог по категоріям", new List<UserRole> {UserRole.Admin, UserRole.Manager, UserRole.User}, CatalogAction.ShowAllCategories),
+                new MenuItem("Всі товари в категорії", new List<UserRole>{UserRole.Admin, UserRole.Manager, UserRole.User}, CatalogAction.AllUnitsInCategory),
+                new MenuItem("Вийти", new List <UserRole> { UserRole.Admin, UserRole.Manager, UserRole.User }, CatalogAction.Exit)
+                
             };
 
             
@@ -495,6 +538,12 @@ namespace Catalog_on_DotNet
                             break;
                         case CatalogAction.Exit:                            
                             return;
+                        case CatalogAction.ShowAllCategories:
+                            categoryService.ShowCategoriesTree(categoryService.GetCategoriesTree(categoryService.GetAllCategories()));
+                            break;
+                        case CatalogAction.AllUnitsInCategory:
+                            ShowUnitsInCategory();
+                            break;
                         default:
                             Console.WriteLine("невірний вибір. спробуйте ще раз\n");
                             break;

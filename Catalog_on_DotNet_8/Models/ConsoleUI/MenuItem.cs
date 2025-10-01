@@ -17,6 +17,8 @@ namespace Catalog_on_DotNet
         ShowQuantityHistory,
         FindUnit,
         CategoriesMenu,
+        ShowAllCategories,
+        AllUnitsInCategory,
         Exit
     }
     public class MenuItem
