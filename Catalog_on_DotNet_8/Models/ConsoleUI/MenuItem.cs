@@ -9,6 +9,7 @@ namespace Catalog_on_DotNet
     public enum CatalogAction
     {       
         AddUnit,
+        AddUnitToCategory,
         UpdateUnit,
         DeleteUnit,
         ChangeUnitInfo,

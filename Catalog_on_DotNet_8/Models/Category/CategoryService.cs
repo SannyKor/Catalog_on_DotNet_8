@@ -42,13 +42,22 @@ namespace Catalog_on_DotNet
             _dbContext.SaveChanges();
             return true;
         }
-        public List<Unit> ShowUnitsInCategory(string categoryName)
+        public List<Unit> GetUnitsInCategory(string categoryName)
         {
             return _dbContext.Categories
                 .Where(c => c.Name == categoryName)
                 .Include(c => c.Units)
                 .SelectMany(c => c.Units)
                 .ToList();
+        }
+        public List<Unit> GetUnitsInCategoryIncludingSubCategories(Category category)
+        {
+            List<Unit> units = GetUnitsInCategory(category.Name);
+            foreach (var subCategory in category.SubCategories)
+            {
+                units.AddRange(GetUnitsInCategoryIncludingSubCategories(subCategory));
+            }
+            return units;
         }
         
         public List<Category> ShowSubCategories(int categoryId)

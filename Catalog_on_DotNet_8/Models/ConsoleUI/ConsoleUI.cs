@@ -276,12 +276,21 @@ namespace Catalog_on_DotNet
         {
             Console.WriteLine("Введіть назву категорії: \n");
             string? categoryName = Console.ReadLine();
+            
             if (!string.IsNullOrEmpty(categoryName))
             {
-                if (categoryService.GetCategoryByName(categoryName) != null)
-                { 
-                categoryService.ShowUnitsInCategory(categoryName);
+                var category = categoryService.GetCategoryByName(categoryName);
+                if (category != null)
+                {                   
+                        categoryService.GetUnitsInCategoryIncludingSubCategories(category);                    
                 }
+                else
+                {
+                    Console.WriteLine($"Категорія з назвою '{categoryName}' не знайдена. \n " +
+                                      $"Переконайтесь в правильності вводу.");
+                    return;
+                }
+                
             }
             else
             {
@@ -483,7 +492,8 @@ namespace Catalog_on_DotNet
             List<MenuItem> menu = new List<MenuItem>
             {
                 new MenuItem ("Додати новий товар", new List <UserRole>  {UserRole.Admin}, CatalogAction.AddUnit),
-                new MenuItem("Видалити товар", new List <UserRole>  {UserRole.Admin}, CatalogAction.DeleteUnit),
+                new MenuItem("Додати товар до ктегорії", new List<UserRole> {UserRole.Admin}, CatalogAction.AddUnitToCategory),
+                new MenuItem("Видалити товар", new List <UserRole> {UserRole.Admin}, CatalogAction.DeleteUnit),
                 new MenuItem("Змінити інформацію про товар", new List <UserRole>  {UserRole.Admin, UserRole.Manager}, CatalogAction.ChangeUnitInfo),
                 new MenuItem("Вивести інформацію про товар", new List <UserRole>  {UserRole.Admin, UserRole.Manager, UserRole.User}, CatalogAction.ShowUnit),
                 new MenuItem("Показати весь каталог", new List <UserRole>  {UserRole.Admin, UserRole.Manager, UserRole.User}, CatalogAction.ShowAllUnits),
@@ -495,8 +505,6 @@ namespace Catalog_on_DotNet
                 new MenuItem("Вийти", new List <UserRole> { UserRole.Admin, UserRole.Manager, UserRole.User }, CatalogAction.Exit)
                 
             };
-
-            
             
             while (true)
             {
@@ -514,6 +522,9 @@ namespace Catalog_on_DotNet
                     {
                         case CatalogAction.AddUnit:
                             CreateNewUnit();
+                            break;
+                        case CatalogAction.AddUnitToCategory:
+
                             break;
                         case CatalogAction.DeleteUnit:
                             RemoveUnit();
