@@ -53,6 +53,29 @@ namespace Catalog_on_DotNet
             Unit addedUnit = catalog.AddUnit(name, description, prise, quantity, currentUser.Id);
             AddUnitToCategory(addedUnit.Id);
         }
+        public int GetUnitId()
+        {
+            Console.WriteLine("введіть артикул: ");
+            string? putId = Console.ReadLine();
+            if (!string.IsNullOrEmpty(putId) && int.TryParse(putId, out int id))
+            {
+                Unit? unit = catalog.GetUnitById(id);
+                if (unit != null)
+                {
+                    return unit.Id;
+                }
+                else
+                {
+                    Console.WriteLine("товар не знайдено\n");
+                    return -1;
+                }
+            }
+            else 
+            {
+            Console.WriteLine("Здається ви залишили поле пустим.");
+                return -1;
+            }
+        }
         public void AddUnitToCategory(int unitId)
         {
             while (true)
@@ -60,22 +83,19 @@ namespace Catalog_on_DotNet
             Console.WriteLine("Виберіть категорію зі списку до якої буде додано товар: ");
                 categoryService.ShowCategoriesTree(categoryService.GetCategoriesTree(categoryService.GetAllCategories()));
                 string? categoryName = Console.ReadLine();
-                if (!string.IsNullOrEmpty(categoryName))
+                if (!string.IsNullOrEmpty(categoryName) && unitId > 0)
                 {
-                   if (categoryService.AssignUnitToCategory(unitId, categoryName))
-                   {
+                    if (categoryService.AssignUnitToCategory(unitId, categoryName))
                         Console.WriteLine($"Товар додано в категорію '{categoryName}'");
-                   }
-                   else
-                   {
+                    else
                         Console.WriteLine($"Категорія з назвою '{categoryName}' не знайдена. \n " +
                                           $"Переконайтесь в правильності вводу.");
-                   }
                 }
-                else
-                {
-                    Console.WriteLine("Назва категорії не може бути порожньою.");
-                }
+                else if (unitId < 0)
+                    Console.WriteLine("Товару з таким артикулом не існує.");
+                else                
+                    Console.WriteLine("Назва категорії не може бути порожньою.");                
+                
                 Console.WriteLine("Додати товар в іншу категорію? (y/n)");
                 string? choise = Console.ReadLine();
 
@@ -85,11 +105,10 @@ namespace Catalog_on_DotNet
                     break;
                 else
                     Console.WriteLine("невірний вибір, спробуйте ще раз");
-            }
-
-            
+            }            
         }
-
+        public List<Category> CategoriesInUnit()
+        { }
         public void RemoveUnit()
         {
             Console.WriteLine("введіть артикул товару для видалення: ");
@@ -469,11 +488,7 @@ namespace Catalog_on_DotNet
                 }
 
             }
-        }
-
-
-
-
+        }        
         public void RunMainMenu()
         {            
             AuthService authService = new AuthService(userService);
@@ -493,6 +508,7 @@ namespace Catalog_on_DotNet
             {
                 new MenuItem ("Додати новий товар", new List <UserRole>  {UserRole.Admin}, CatalogAction.AddUnit),
                 new MenuItem("Додати товар до ктегорії", new List<UserRole> {UserRole.Admin}, CatalogAction.AddUnitToCategory),
+                new MenuItem("Ктегорії до яких належить товар", new List<UserRole> {UserRole.Admin}, CatalogAction.CategoriesInUnit),
                 new MenuItem("Видалити товар", new List <UserRole> {UserRole.Admin}, CatalogAction.DeleteUnit),
                 new MenuItem("Змінити інформацію про товар", new List <UserRole>  {UserRole.Admin, UserRole.Manager}, CatalogAction.ChangeUnitInfo),
                 new MenuItem("Вивести інформацію про товар", new List <UserRole>  {UserRole.Admin, UserRole.Manager, UserRole.User}, CatalogAction.ShowUnit),
@@ -524,7 +540,10 @@ namespace Catalog_on_DotNet
                             CreateNewUnit();
                             break;
                         case CatalogAction.AddUnitToCategory:
-
+                            AddUnitToCategory(GetUnitId());
+                            break;
+                        case CatalogAction.CategoriesInUnit:
+                            //CategoriesInUnit();
                             break;
                         case CatalogAction.DeleteUnit:
                             RemoveUnit();

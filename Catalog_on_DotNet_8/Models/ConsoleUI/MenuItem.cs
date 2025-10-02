@@ -10,6 +10,7 @@ namespace Catalog_on_DotNet
     {       
         AddUnit,
         AddUnitToCategory,
+        CategoriesInUnit,
         UpdateUnit,
         DeleteUnit,
         ChangeUnitInfo,
