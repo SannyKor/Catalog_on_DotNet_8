@@ -146,5 +146,9 @@ namespace Catalog_on_DotNet
             }
             return quantityHistory;
         }
+        public override List<Category> GetCategoriesInUnit(int unitId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -50,7 +50,10 @@ namespace Catalog_on_DotNet
         {
             return storage.GetUnitQuantityHistory(id);
         }
-
+        public List<Category> GetCategoriesInUnit(int unitId)
+        {
+            return storage.GetCategoriesInUnit(unitId);
+        }
         
     }
 }

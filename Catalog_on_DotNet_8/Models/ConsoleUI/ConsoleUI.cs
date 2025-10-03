@@ -107,8 +107,23 @@ namespace Catalog_on_DotNet
                     Console.WriteLine("невірний вибір, спробуйте ще раз");
             }            
         }
-        public List<Category> CategoriesInUnit()
-        { }
+        public void CategoriesInUnit(int unitId)
+        {
+            List<Category> categories = catalog.GetCategoriesInUnit(unitId);
+            if (categories.Count > 0)
+            {
+                
+                Console.WriteLine("Список категорій до яких належить товар: ");
+                foreach (var category in categories)
+                {
+                    Console.WriteLine($"{categories.IndexOf(category) + 1}. {category.Name}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Товар не належить жодній категорії або товару з таким артикулом не існує.");
+            }
+        }
         public void RemoveUnit()
         {
             Console.WriteLine("введіть артикул товару для видалення: ");
@@ -301,7 +316,12 @@ namespace Catalog_on_DotNet
                 var category = categoryService.GetCategoryByName(categoryName);
                 if (category != null)
                 {                   
-                        categoryService.GetUnitsInCategoryIncludingSubCategories(category);                    
+                        List <Unit> unitsInCategory = categoryService.GetUnitsInCategoryIncludingSubCategories(category);  
+                    foreach (var unit in unitsInCategory)
+                    {
+                        Console.WriteLine($"{unitsInCategory.IndexOf(unit) + 1}.\n");
+                        UnitInfo(unit);
+                    }
                 }
                 else
                 {
@@ -543,7 +563,7 @@ namespace Catalog_on_DotNet
                             AddUnitToCategory(GetUnitId());
                             break;
                         case CatalogAction.CategoriesInUnit:
-                            //CategoriesInUnit();
+                            CategoriesInUnit(GetUnitId());
                             break;
                         case CatalogAction.DeleteUnit:
                             RemoveUnit();

@@ -131,6 +131,12 @@ namespace Catalog_on_DotNet
             }
 
         }
+        public override List<Category> GetCategoriesInUnit (int unitId)
+        {
+            return dbContext.Categories
+                .Where(c => c.Units.Any(u => u.Id == unitId))
+                .ToList();
+        }
        
     }
 }

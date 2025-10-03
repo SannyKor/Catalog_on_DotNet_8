@@ -328,6 +328,10 @@ namespace Catalog_on_DotNet
                 }
             }
         }
+        public override List<Category> GetCategoriesInUnit(int unitId)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 }

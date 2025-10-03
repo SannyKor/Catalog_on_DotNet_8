@@ -17,5 +17,6 @@ namespace Catalog_on_DotNet
         public abstract void UpdateUnit(Unit unit, Guid userId);
         public abstract List<Unit> FindUnit(string query);
         public abstract List<Unit.SaveQuantityChange> GetUnitQuantityHistory(int id);
+        public abstract List<Category> GetCategoriesInUnit(int unitId);
     }
 }
