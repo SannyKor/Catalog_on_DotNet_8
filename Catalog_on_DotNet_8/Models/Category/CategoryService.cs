@@ -50,12 +50,12 @@ namespace Catalog_on_DotNet
                 .SelectMany(c => c.Units)
                 .ToList();
         }
-        public List<Unit> GetUnitsInCategoryIncludingSubCategories(Category category)
+        public List<Unit> GetUnitsInCategoryIncludingSubCategories(Category category)//прибрати дублювання товарів
         {
             List<Unit> units = GetUnitsInCategory(category.Name);
             foreach (var subCategory in category.SubCategories)
             {
-                units.AddRange(GetUnitsInCategoryIncludingSubCategories(subCategory));
+                units.AddRange(GetUnitsInCategoryIncludingSubCategories(subCategory).Except(units));
             }
             return units;
         }
@@ -134,6 +134,29 @@ namespace Catalog_on_DotNet
             }
             return false;
         }
+        public bool ChangeCategory (int categoryId, string? newName = null, int? newParentId = null)
+        {
+            var category = _dbContext.Categories.FirstOrDefault(c => c.Id == categoryId);
+            if (category == null) return false;
+            if (newName != null)
+            {
+                if (!_dbContext.Categories.Any(c => c.Name == newName))
+                {
+                    category.Name = newName;
+                }
+                else { return false; }
+            }
+            if (newParentId != null)
+            {
+                if (_dbContext.Categories.Any(c => c.ParentId == newParentId))
+                {
+                    category.ParentId = newParentId;
+                }
+                else { return false; }
+            }
+            return _dbContext.SaveChanges() > 0;
 
+
+        }
     }
 }

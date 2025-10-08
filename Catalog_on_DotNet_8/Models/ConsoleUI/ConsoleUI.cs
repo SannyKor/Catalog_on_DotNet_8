@@ -482,7 +482,14 @@ namespace Catalog_on_DotNet
                                 string? newName = Console.ReadLine();
                                 if (string.IsNullOrEmpty(newName))
                                 {
-                                    category.Name = newName;
+                                    if (categoryService.ChangeCategory(category.Id, newName))
+                                    {
+                                        Console.WriteLine($"Категорія '{categoryToEdit}' успішно перейменована на '{newName}'.");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"Категорія з назвою '{newName}' вже існує. Введіть іншу назву.");
+                                    }
                                 }
                             }
                             else
