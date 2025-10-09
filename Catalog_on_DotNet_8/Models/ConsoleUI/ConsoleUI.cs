@@ -480,7 +480,7 @@ namespace Catalog_on_DotNet
                             {
                                 Console.WriteLine("Введіть нову назву категорії:");
                                 string? newName = Console.ReadLine();
-                                if (string.IsNullOrEmpty(newName))
+                                if (!string.IsNullOrEmpty(newName))
                                 {
                                     if (categoryService.ChangeCategory(category.Id, newName))
                                     {
